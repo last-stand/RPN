@@ -53,4 +53,10 @@ void test_evaluate_should_work_for_multiple_numbers_and_operators_in_Reverse_Pol
 	expression = "2 3 4 + -";
 	result = evaluate(expression);
 	assertEqual(result, -5);
+}
+
+void test_evaluate_should_multiply_numbers_1_2_3_4_5_in_Reverse_Polish_notation(){
+	expression = "1 2 3 4 5 * * * *";
+	result = evaluate(expression);
+	assertEqual(result, 120);
 } 
