@@ -59,4 +59,28 @@ void test_evaluate_should_multiply_numbers_1_2_3_4_5_in_Reverse_Polish_notation(
 	expression = "1 2 3 4 5 * * * *";
 	result = evaluate(expression);
 	assertEqual(result, 120);
+}
+
+void test_evaluate_should_give_7_for_expression_2_2_2_multiply_2_minus_3_plus_plus(){
+	expression = "2 2 2 * 2 - 3 + +";
+	result = evaluate(expression);
+	assertEqual(result, 7);
+}
+
+void test_evaluate_should_give_20_for_expression_2_2_2_2_2_multiply_multiply_2_plus_plus_2_minus_multiply(){
+	expression = "2 2 2 2 2 * * 2 + + 2 - *";
+	result = evaluate(expression);
+	assertEqual(result, 20);
 } 
+
+void test_evaluate_should_give_0_for_expression_2_2_minus_2_2_2_multiply_2_minus_minus_minus(){
+	expression = "2 2 - 2 2 2 * 2 - - -";
+	result = evaluate(expression);
+	assertEqual(result, 0);
+}
+
+void test_evaluate_should_give_14_for_expression_5_1_2_plus_4_multiply_plus_3_minus(){
+	expression = "5 1 2 + 4 * + 3 -";
+	result = evaluate(expression);
+	assertEqual(result, 14);
+}
