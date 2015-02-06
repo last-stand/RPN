@@ -30,17 +30,15 @@ int operation(char expression,int number1,int number2){
 
 
 void getNumber(char* expression,RPNNode_ptr rpnNode){
-	char number[rpnNode->end - rpnNode->begin+2];
-	int i,j=0;
-	for(i=rpnNode->begin; i <= rpnNode->end; i++,j++){
-		number[j] = expression[i];
-	}
-	rpnNode->data = malloc(sizeof(int));
-	*(int*)(rpnNode->data) = atoi(number);
+	int i;
+	int *number = (int*)calloc(1,sizeof(int));
+	for(i=rpnNode->begin; i <= rpnNode->end; i++)
+		*number = *number*10 + (int)(expression[i] - '0');
+	rpnNode->data = number;
 }
 
 void getOperator(char* expression,RPNNode_ptr rpnNode){
-	rpnNode->data = malloc(sizeof(char));
+	rpnNode->data = calloc(1,sizeof(char));
 	*(char*)(rpnNode->data) = expression[rpnNode->begin];
 }
 

@@ -184,11 +184,11 @@ void test_createRPNList_should_create_list_of_numbers_and_operators_separately()
 
 void test_createRPNList_should_create_list_of_numbers_and_multiple_operators(){
 	RPNList * resultList;
-	expression = "2 33 12345 + -";
+	expression = "2 333 4444 + -";
 	resultList = createRPNList(expression);
 	assertEqual(*(int*)(resultList->head->data), 2);
-	assertEqual(*(int*)resultList->head->next->data, 33);
-	assertEqual(*(int*)resultList->head->next->next->data, 12345);
+	assertEqual(*(int*)resultList->head->next->data, 333);
+	assertEqual(*(int*)resultList->head->next->next->data, 4444);
 	assertEqual(*(char*)resultList->head->next->next->next->data,'+');
 	assertEqual(*(char*)resultList->tail->data, '-');
 	free(resultList->head->data);
