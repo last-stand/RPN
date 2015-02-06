@@ -18,3 +18,11 @@ int push(Stack stack, void *data){
 void * pop(Stack stack){
 	return deleteElementAt(stack.list, stack.list->count-1);
 };
+
+void printStack(Stack stack){
+	Node_ptr walker = stack.list->head;
+	while(walker != NULL){
+		 printf("%d\n",*(int*)walker->data);
+		 walker = walker->next;
+	}
+};

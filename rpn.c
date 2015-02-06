@@ -3,8 +3,14 @@
 #include <stdlib.h>
 #include "rpn.h"
 
-int checkOpertaor(char operator){
-	return operator=='+'|| operator=='-'|| operator=='*'|| operator=='/'|| operator=='^';
+int isOpertaor(char operator){
+	char *operatorString = "+-*/^";
+	int i;
+	for(i=0; i < strlen(operatorString); i++){
+		if(operator==operatorString[i])
+			return 1;
+	}
+	return 0;
 };
 
 int operation(char expression,int number1,int number2){
@@ -22,38 +28,6 @@ int operation(char expression,int number1,int number2){
 	return result;
 }
 
-RPNList create_List(void){
-	RPNList list;
-	list.head = NULL;
-	list.tail = NULL;
-	list.count = 0;
-	return list;
-};
-
-int add_to_RPNlist(RPNList *list,RPNNode *node){
-	if(list->head == NULL){
-		list->head = node;
-		list->tail = node;
-		list->count = 1;
-		return 1;
-	}
-	list->tail->next = node;
-	list->tail = node;
-	list->count += 1;
-	if(list->count > 0)
-		return 1;
-	return 0;
-};
-
-RPNNode_ptr createRPN_node(int start, int end){
-	RPNNode_ptr rpn_node = calloc(1,sizeof(RPNNode));
-	rpn_node->begin = start;
-	rpn_node->end = end;
-	rpn_node->data = NULL;
-	rpn_node->RPNFunction = NULL;
-	rpn_node->next = NULL;
-	return rpn_node;
-};
 
 void getNumber(char* expression,RPNNode_ptr rpnNode){
 	char number[rpnNode->end - rpnNode->begin+2];
@@ -87,7 +61,7 @@ void checkNumber(int *index, char* expression, RPNList* list){
 
 void checkOperator(int *index, char* expression, RPNList* list){
 	RPNNode_ptr rpn_node = NULL;
-	if (checkOpertaor(expression[*index])){
+	if (isOpertaor(expression[*index])){
 		(rpn_node == NULL) && (rpn_node = createRPN_node(*index,*index));
 	}
 	if(rpn_node != NULL){
@@ -107,25 +81,40 @@ RPNList * createRPNList(char* expression){
 	return rpn_list;
 }
 
-int evaluate(char *expression){
-	int a, b, result;
-	int i, length = strlen(expression);
-	char *numStr = (char*)calloc(8,sizeof(char));
-	Stack stack = createStack();
-	for(i=0; i<length; i++){
-		if (expression[i] != ' '){
-	        if (checkOpertaor(expression[i])){
-	        	b = atoi((char*)pop(stack));
-	            a = atoi((char*)pop(stack));
-	            sprintf(numStr,"%d",operation(expression[i], a, b)); //converting int to string
-	            push(stack, numStr);
-	        }
-	        else {
-	       		push(stack,&expression[i]);
-	        }
-	    }   
+void freeAllNodes(RPNList_ptr rpn_list){
+	RPNNode_ptr walker = rpn_list->head;
+	while(walker != NULL){
+		if(walker->data != NULL) free(walker->data);
+		free(walker);
+		walker = walker->next;
 	}
-	result = atoi((char*)(*stack.top)->data);
+}
+
+int listEvaluator(Stack stack,RPNNode_ptr walker,RPNList_ptr rpn_list){
+	void * a, * b;
+	int *numStr = (int*)calloc(1,sizeof(int)), result;
+	walker = rpn_list->head;
+	while(walker != NULL){
+        if (isOpertaor(*(char*)walker->data)){
+        	b = pop(stack);	a = pop(stack);
+            *(int*)numStr = operation(*(char*)walker->data, *(int*)a, *(int*)b);
+            push(stack, numStr);
+        }
+        else 
+       	   push(stack,walker->data);
+        walker = walker->next;
+	}
+	result = *(int*)(*stack.top)->data;
 	free(numStr);
 	return result;
+}
+
+int evaluate(char *expression){
+	int result;
+	RPNNode_ptr walker;
+	Stack stack = createStack();
+	RPNList_ptr rpn_list = createRPNList(expression);
+    result = listEvaluator(stack,walker,rpn_list);
+    freeAllNodes(rpn_list);
+    return result;
 };
