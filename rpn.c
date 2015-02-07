@@ -88,6 +88,18 @@ void freeAllNodes(RPNList_ptr rpn_list){
 	}
 }
 
+int checkError(RPNList_ptr rpn_list){
+	int countOperator = 0, countOperand = 0;
+	RPNNode_ptr walker = rpn_list->head;
+	while(walker != NULL){
+		if(isOpertaor(*(char*)walker->data)) countOperator++;
+		else countOperand++;
+		walker = walker->next;
+	}
+	if(countOperator != countOperand-1) return -1;
+	return 0;
+}
+
 int listEvaluator(Stack stack,RPNNode_ptr walker,RPNList_ptr rpn_list){
 	void * a, * b;
 	int *numStr = (int*)calloc(1,sizeof(int)), result;
@@ -107,12 +119,14 @@ int listEvaluator(Stack stack,RPNNode_ptr walker,RPNList_ptr rpn_list){
 	return result;
 }
 
-int evaluate(char *expression){
-	int result;
+Result evaluate(char *expression){
+	Result result;
 	RPNNode_ptr walker;
 	Stack stack = createStack();
 	RPNList_ptr rpn_list = createRPNList(expression);
-    result = listEvaluator(stack,walker,rpn_list);
+	result.error = checkError(rpn_list);
+	if(!result.error)
+    	result.status = listEvaluator(stack,walker,rpn_list);
     freeAllNodes(rpn_list);
     return result;
 };

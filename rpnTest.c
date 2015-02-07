@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 char *expression;
-int result;
+Result result;
 RPNList list;
 RPNList_ptr npr_list = &list;
 
@@ -205,71 +205,93 @@ void test_createRPNList_should_create_list_of_numbers_and_multiple_operators(){
 void test_evaluate_should_add_two_numbers_2_and_3_in_Reverse_Polish_notation(){
 	expression = "2 3 +";
 	result = evaluate(expression);
-	assertEqual(result, 5);
+	assertEqual(result.status, 5);
 }
 
 void test_evaluate_should_subtract_two_numbers_2_and_3_in_Reverse_Polish_notation(){
 	expression = "2 3 -";
 	result = evaluate(expression);
-	assertEqual(result, -1);
+	assertEqual(result.status, -1);
 }
 
 void test_evaluate_should_multiply_two_numbers_2_and_3_in_Reverse_Polish_notation(){
 	expression = "2 3 *";
 	result = evaluate(expression);
-	assertEqual(result, 6);
+	assertEqual(result.status, 6);
 }
 
 void test_evaluate_should_divide_two_numbers_2_and_3_in_Reverse_Polish_notation(){
 	expression = "2 3 /";
 	result = evaluate(expression);
-	assertEqual(result, 0);
+	assertEqual(result.status, 0);
 }
 
 void test_evaluate_should_divide_two_numbers_6_and_2_in_Reverse_Polish_notation(){
 	expression = "6 2 /";
 	result = evaluate(expression);
-	assertEqual(result, 3);
+	assertEqual(result.status, 3);
 }
 
 void test_evalute_should_give_20_for_11_plus_9(){
 	expression = "11 9 +";
 	result = evaluate(expression);
-	assertEqual(result, 20);
+	assertEqual(result.status, 20);
 }
 
 void test_evaluate_should_work_for_multiple_numbers_and_operators_in_Reverse_Polish_notation(){
 	expression = "2 3 4 + -";
 	result = evaluate(expression);
-	assertEqual(result, -5);
+	assertEqual(result.status, -5);
 }
 
 void test_evaluate_should_multiply_numbers_1_2_3_4_5_in_Reverse_Polish_notation(){
 	expression = "1 2 3 4 5 * * * *";
 	result = evaluate(expression);
-	assertEqual(result, 120);
+	assertEqual(result.status, 120);
 }
 
 void test_evaluate_should_give_7_for_expression_2_2_2_multiply_2_minus_3_plus_plus(){
 	expression = "2 2 2 * 2 - 3 + +";
 	result = evaluate(expression);
-	assertEqual(result, 7);
+	assertEqual(result.status, 7);
 }
 
 void test_evaluate_should_give_14_for_expression_5_1_2_plus_4_multiply_plus_3_minus(){
 	expression = "5 1 2 + 4 * + 3 -";
 	result = evaluate(expression);
-	assertEqual(result, 14);
+	assertEqual(result.status, 14);
 }
 
-void test_evaluate_should_give_20_for_expression_2_2_2_2_2_multiply_multiply_2_plus_plus_2_minus_multiply(){
-	expression = "2 2 2 2 2 * * 2 + + 2 - *";
-	result = evaluate(expression);
-	assertEqual(result, 20);
-} 
+void test_checkError_should_give_0_if_number_of_operator_is_insufficient_in_expression(){
+	RPNList * resultList;
+	expression = "5 1 2 + 4 * 3 -";
+	resultList = createRPNList(expression);
+	assertEqual(checkError(resultList), -1);
+}
 
-// void test_evaluate_should_give_0_for_expression_2_2_minus_2_2_2_multiply_2_minus_minus_minus(){
-// 	expression = "2 2 - 2 2 2 * 2 - - -";
-// 	result = evaluate(expression);
-// 	assertEqual(result, 0);
-// }
+void test_checkError_should_give_0_if_number_of_operator_is_more_than_the_expectation(){
+	RPNList * resultList;
+	expression = "2 2 2 * * 2 * 2 * * 2 + + 2 - *";
+	resultList = createRPNList(expression);
+	assertEqual(checkError(resultList), -1);
+}
+
+void test_checkError_should_give_1_if_number_of_operator_is_sufficient_in_expression(){
+	RPNList * resultList;
+	expression = "1 2 + 3 * 6 + 2 3 + /";
+	resultList = createRPNList(expression);
+	assertEqual(checkError(resultList), 0);
+}
+
+void test_evaluate_should_give_error_in_result_if_number_of_operator_is_insufficient(){
+	expression = "2 2 2 * / 2 - 3 + +";
+	result = evaluate(expression);
+	assertEqual(result.error, -1);
+}
+
+void test_evaluate_should_not_give_error_in_result_if_number_of_operator_is_sufficient(){
+	expression = "2 2 2 * 2 - 3 + +";
+	result = evaluate(expression);
+	assertEqual(result.error, 0);
+	assertEqual(result.status, 7);
+}
