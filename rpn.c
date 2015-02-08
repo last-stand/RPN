@@ -69,9 +69,8 @@ void checkOperator(int *index, char* expression, RPNList* list){
 }
 
 RPNList * createRPNList(char* expression){
-	RPNList_ptr rpn_list = calloc(1,sizeof(RPNList));
 	int i, length = strlen(expression);
-	*rpn_list = create_List();
+	RPNList_ptr rpn_list = create_List();
 	for(i=0; i<length; i++){
 		checkNumber(&i, expression, rpn_list);
 		checkOperator(&i, expression, rpn_list);
@@ -82,7 +81,7 @@ RPNList * createRPNList(char* expression){
 void freeAllNodes(RPNList_ptr rpn_list){
 	RPNNode_ptr walker = rpn_list->head;
 	while(walker != NULL){
-		if(walker->data != NULL) free(walker->data);
+		free(walker->data);
 		free(walker);
 		walker = walker->next;
 	}
@@ -130,3 +129,4 @@ Result evaluate(char *expression){
     freeAllNodes(rpn_list);
     return result;
 };
+

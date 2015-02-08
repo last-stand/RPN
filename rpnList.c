@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-RPNList create_List(void){
-	RPNList list;
-	list.head = NULL;
-	list.tail = NULL;
-	list.count = 0;
+RPNList_ptr create_List(void){
+	RPNList_ptr list = calloc(1, sizeof(RPNList));
+	list->head = NULL;
+	list->tail = NULL;
+	list->count = 0;
 	return list;
 };
 

@@ -92,26 +92,33 @@ void* deleteHead(LinkedList *list, int index){
 	(list->head == list->tail) && (list->tail = NULL);
 	list->head = list->head->next;
 	list->count -= 1;
+	free(list->head);
 	return data;
 }
 
 void *deleteTail(LinkedList *list, int index){
+	void* data;
 	Node_ptr walker = list->head, previous_node, target_node;
 	previous_node = getNodeAt(list, index -1);
 	target_node = getNodeAt(list, index);
 	list->tail = previous_node;
 	previous_node->next = NULL;
 	list->count -= 1;
-	return target_node->data;
+	data = target_node->data;
+	free(target_node);
+	return data;
 }
 
 void *deleteMiddle(LinkedList *list, int index){
+	void* data;
 	Node_ptr walker = list->head, previous_node, target_node;
 	previous_node = getNodeAt(list, index -1);
 	target_node = getNodeAt(list, index);
 	previous_node->next = target_node->next;
 	list->count -= 1;
-	return target_node->data;
+	data = target_node->data;
+	free(target_node);
+	return data;
 }
 
 void * deleteElementAt(LinkedList *list, int index){
